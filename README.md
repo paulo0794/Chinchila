@@ -77,3 +77,50 @@ This interactive documentation allows you to:
 - Database: PostgreSQL
 - Documentation: OpenAPI 3.0, Swagger UI
 - Containerization: Docker, Docker Compose
+- Testing: Cypress (Frontend E2E tests)
+
+## Testing
+
+The frontend includes end-to-end tests using Cypress. These tests verify all critical functionality of the application.
+
+### Running Tests
+
+To run the frontend tests:
+
+```bash
+cd frontend
+npm test           # Run all tests in headless mode
+npm run test:open  # Open Cypress Test Runner for interactive testing
+npm run test:e2e   # Run only end-to-end tests in headless mode
+```
+
+## Git Repository Management
+
+### .gitignore Files
+
+The project includes .gitignore files to ensure only necessary files are committed to the repository:
+
+- Root `.gitignore` - Project-wide ignored files
+- `frontend/.gitignore` - Frontend-specific ignored files
+- `backend/.gitignore` - Backend-specific ignored files
+
+### Removing Previously Committed Ignored Files
+
+If you've already committed files that should be ignored, you can remove them from the repository (while keeping them in your local directory) using the provided script:
+
+```bash
+# Make the script executable (if needed)
+chmod +x remove-ignored-files.sh
+
+# Run the script
+./remove-ignored-files.sh
+
+# Push the changes to the remote repository
+git push
+```
+
+This script will:
+1. Remove tracked files that should be ignored according to the .gitignore files
+2. Commit this change locally
+3. Provide instructions for pushing the changes to the remote repository
+

@@ -8,14 +8,17 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'product_db',
 });
 
-// Test the connection
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('Database connection error:', err.stack);
-  } else {
-    console.log('Database connected successfully');
-  }
-});
+// Only test the connection in production mode, not during tests
+if (process.env.NODE_ENV !== 'test') {
+  // Test the connection
+  pool.query('SELECT NOW()', (err, res) => {
+    if (err) {
+      console.error('Database connection error:', err.stack);
+    } else {
+      console.log('Database connected successfully');
+    }
+  });
+}
 
 module.exports = {
   query: (text, params) => pool.query(text, params),
