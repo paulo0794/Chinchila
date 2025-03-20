@@ -1,9 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
 
 // Load environment variables
 dotenv.config();
+
+// Load OpenAPI specification
+const swaggerDocument = YAML.load(path.join(__dirname, '../openapi.yaml'));
 
 // Import routes
 const categoriesRoutes = require('./routes/categories');
@@ -21,6 +27,9 @@ app.use(express.json());
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/products', productsRoutes);
 
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Root route
 app.get('/', (req, res) => {
   res.json({
@@ -28,7 +37,8 @@ app.get('/', (req, res) => {
     endpoints: {
       categories: '/api/categories',
       products: '/api/products'
-    }
+    },
+    documentation: '/api-docs'
   });
 });
 

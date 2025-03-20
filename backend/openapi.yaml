@@ -1,0 +1,495 @@
+openapi: 3.0.3
+info:
+  title: Product CRUD API
+  description: API for managing products and categories
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+tags:
+  - name: Categories
+    description: Operations related to product categories
+  - name: Products
+    description: Operations related to products
+
+paths:
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      description: Retrieve a list of all product categories
+      operationId: getAllCategories
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      tags:
+        - Categories
+      summary: Create a new category
+      description: Add a new product category
+      operationId: createCategory
+      requestBody:
+        description: Category object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  example: Electronics
+      responses:
+        '201':
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by ID
+      description: Retrieve a specific category by its ID
+      operationId: getCategoryById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the category to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      tags:
+        - Categories
+      summary: Update a category
+      description: Update an existing category by its ID
+      operationId: updateCategory
+      parameters:
+        - name: id
+          in: path
+          description: ID of the category to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated category object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  example: Updated Electronics
+      responses:
+        '200':
+          description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      tags:
+        - Categories
+      summary: Delete a category
+      description: Delete a category by its ID (will also delete associated products)
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          description: ID of the category to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Category deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Category deleted successfully
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      description: Retrieve a list of all products with their category information
+      operationId: getAllProducts
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      tags:
+        - Products
+      summary: Create a new product
+      description: Add a new product
+      operationId: createProduct
+      requestBody:
+        description: Product object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input or category does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      description: Retrieve a specific product by its ID with category information
+      operationId: getProductById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    put:
+      tags:
+        - Products
+      summary: Update a product
+      description: Update an existing product by its ID
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated product object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input or category does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      tags:
+        - Products
+      summary: Delete a product
+      description: Delete a product by its ID
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product deleted successfully
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /products/category/{categoryId}:
+    get:
+      tags:
+        - Products
+      summary: Get products by category ID
+      description: Retrieve all products belonging to a specific category
+      operationId: getProductsByCategory
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of the category to filter products by
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id_category:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          example: Electronics
+      required:
+        - id_category
+        - description
+    
+    Product:
+      type: object
+      properties:
+        id_product:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          example: Smartphone
+        id_category:
+          type: integer
+          format: int64
+          example: 1
+      required:
+        - id_product
+        - description
+        - id_category
+    
+    ProductRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Smartphone
+        id_category:
+          type: integer
+          format: int64
+          example: 1
+      required:
+        - description
+        - id_category
+    
+    ProductResponse:
+      type: object
+      properties:
+        id_product:
+          type: integer
+          format: int64
+          example: 1
+        product_description:
+          type: string
+          example: Smartphone
+        id_category:
+          type: integer
+          format: int64
+          example: 1
+        category_description:
+          type: string
+          example: Electronics
+      required:
+        - id_product
+        - product_description
+        - id_category
+        - category_description
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Internal server error
+      required:
+        - error
