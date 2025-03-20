@@ -100,6 +100,37 @@ The frontend communicates with the backend API using the Fetch API. All API call
 - `updateProduct(id, productData)` - Updates an existing product
 - `deleteProduct(id)` - Deletes a product
 
+## Testing
+
+The frontend includes comprehensive end-to-end tests using Cypress. These tests verify that all features of the application work correctly.
+
+### Running Tests
+
+To run the tests, you can use the following npm scripts:
+
+```bash
+# Run all tests in headless mode
+npm test
+
+# Open Cypress Test Runner for interactive testing
+npm run test:open
+
+# Run only end-to-end tests in headless mode
+npm run test:e2e
+```
+
+### Test Structure
+
+The tests are organized into three main files:
+
+1. **Tab Switching Tests** - Verify that the tab navigation works correctly
+2. **Category Operations Tests** - Test CRUD operations for categories
+3. **Product Operations Tests** - Test CRUD operations for products
+
+### API Stubbing
+
+The tests use Cypress's network interception capabilities to stub API calls, allowing the tests to run without a backend. This makes the tests faster and more reliable.
+
 ## File Structure
 
 ```
@@ -109,6 +140,14 @@ frontend/
 ├── js/
 │   ├── api.js              # API integration functions
 │   └── app.js              # Main application logic
+├── cypress/
+│   ├── e2e/                # End-to-end tests
+│   │   ├── tab_switching.cy.js  # Tab navigation tests
+│   │   ├── categories.cy.js     # Category CRUD tests
+│   │   └── products.cy.js       # Product CRUD tests
+│   ├── fixtures/           # Test data
+│   └── support/            # Test helpers and commands
+├── cypress.config.js       # Cypress configuration
 ├── index.html              # Main HTML file
 └── README.md               # This documentation
 ```
